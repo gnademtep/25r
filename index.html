@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Gallery</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+    }
+
+    img {
+      display: block;
+      height: auto;
+    }
+
+    h2 {
+      margin: 20px 0 10px 0;
+    }
+
+    .controls {
+      margin: 20px;
+    }
+
+    button, input {
+      margin: 0 10px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+
+    input {
+      width: 80px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="controls">
+  <button id="prevFolder">Previous Folder</button>
+  <input type="number" id="folderInput" min="0" placeholder="Folder #" />
+  <button id="goFolder">Go</button>
+  <button id="nextFolder">Next Folder</button>
+</div>
+
+<h2 id="folderTitle"></h2>
+<div id="imageContainer"></div>
+
+<script>
+let folderNumber = 1; // starting folder
+let maxImages = 200;   // max images per folder
+
+const folderTitle = document.getElementById("folderTitle");
+const imageContainer = document.getElementById("imageContainer");
+const folderInput = document.getElementById("folderInput");
+
+function loadFolder(folder) {
+  imageContainer.innerHTML = ""; // clear previous images
+  folderTitle.textContent = "Folder: " + folder;
+  folderInput.value = folder; // update input
+
+  let i = 1;
+
+  function loadNextImage() {
+    if (i >= maxImages) return; // stop at maxImages
+    const img = new Image();
+    img.src = `./${folder}/(${i}).jpg`;
+
+    img.onload = () => {
+      imageContainer.appendChild(img);
+      i++;
+      loadNextImage();
+    };
+
+    img.onerror = () => {
+      console.log(`Finished loading folder ${folder}`);
+    };
+  }
+
+  loadNextImage();
+}
+
+// Button handlers
+document.getElementById("nextFolder").onclick = () => {
+  folderNumber++;
+  loadFolder(folderNumber);
+};
+
+document.getElementById("prevFolder").onclick = () => {
+  if (folderNumber > 0) {
+    folderNumber--;
+    loadFolder(folderNumber);
+  }
+};
+
+document.getElementById("goFolder").onclick = () => {
+  const inputFolder = parseInt(folderInput.value);
+  if (!isNaN(inputFolder) && inputFolder >= 0) {
+    folderNumber = inputFolder;
+    loadFolder(folderNumber);
+  }
+};
+
+// Initial load
+loadFolder(folderNumber);
+</script>
+
+</body>
+</html>
