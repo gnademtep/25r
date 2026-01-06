@@ -65,7 +65,7 @@ function loadFolder(folder) {
   function loadNextImage() {
     if (i >= maxImages) return; // stop at maxImages
     const img = new Image();
-    img.src = `./${folder}/(${i}).webp`;
+    img.src = `./${folder}/(${i}).jpg`;
 
     img.onload = () => {
       imageContainer.appendChild(img);
